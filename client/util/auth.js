@@ -8,14 +8,23 @@ export function checkAuthLoader() {
     //     acc[name] = value;
     //     return acc;
     // }, {});
-    
+    if(document.cookie){
+        const token = document.cookie.split(';')[1].split("=")[1]
 
-    const token = document.cookie.split(';')[1].split("=")[1]
+         if (!token) {
+            return redirect('/auth');
+        }
+        else{
+            return null;
 
-    if (!token) {
-    return redirect('/auth');
-     }
+        }
  
-    return null;
+   
+
+    }
+     
+
+
+   
 }
 

@@ -1,18 +1,16 @@
 import React, { useEffect } from 'react';
 import ReportForm from '../components/ReportForm';
-import { Cookies,useCookies } from 'react-cookie';
+import ReportsList from '../components/ReportsList';
 
 
 const Dashboard = () => {
-    const [cookies] = useCookies(["token"])
-    useEffect(()=>{
-
-    })
+    
 
     return (
         <div>
-            
+            DashBorad
             <ReportForm/>
+            <ReportsList/>
         </div>
     );
 }
