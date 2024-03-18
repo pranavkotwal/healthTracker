@@ -1,9 +1,12 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import axios from 'axios';
 import { ToastContainer,toast } from 'react-toastify';
+import { ReportsContext } from '../store/report-details';
 
 
 const ReportForm = () => {
+
+    const {setReports} = useContext(ReportsContext)
     const [reportData,setReportData] = useState({
         name:'',
         value:'',
@@ -42,6 +45,10 @@ const ReportForm = () => {
 
             if(success){
                 handleSuccess(message)
+
+                // update report context after successful submission
+                
+                setReports(prevReports => [...prevReports,reportData])
             }
         } catch (error) {
                 handleError(error)

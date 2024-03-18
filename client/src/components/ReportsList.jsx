@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState,useContext } from 'react';
 import axios from 'axios';
-
+import { ReportsContext } from '../store/report-details';
 
 const ReportsList = () => {
     const [reportsByDate, setReportsByDate] = useState([]);
+    const {reports} = useContext(ReportsContext)
 
     useEffect(()=>{
         const getReports = async ()=>{
@@ -11,12 +12,12 @@ const ReportsList = () => {
                 try{
                     const response = await axios.get('http://localhost:3000/v1/user/get-reports',{withCredentials:true})
                 
-                    const reports = response.data;
+                    const reportsData = response.data;
                     const reportsByDateMap = {}
 
                     // organize reports by date
 
-                    reports.forEach(report=>{
+                    reportsData.forEach(report=>{
                         const date = new Date(report.date).toLocaleDateString();
 
                         if(!reportsByDateMap[date]){
@@ -43,9 +44,10 @@ const ReportsList = () => {
         getReports(reportsByDate)
        
 
-    },[])
+    },[reports])
 
-    console.log(reportsByDate)
+    console.log('reportsByDate',reportsByDate)
+    console.log('reports',reports)
     return (
     <div>
       {reportsByDate.map(({ date, reports }) => (

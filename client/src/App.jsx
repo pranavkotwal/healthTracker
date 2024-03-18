@@ -5,8 +5,11 @@ import Register from './pages/Register'
 import Home from './pages/Home'
 import Login from './pages/Login'
 import Dashboard from './pages/Dashboard'
-import { useCookies } from 'react-cookie'
 import {checkAuthLoader} from '../util/auth'
+
+import { ReportsContext } from './store/report-details'
+
+
 
 
 const router = createBrowserRouter([
@@ -15,7 +18,6 @@ const router = createBrowserRouter([
     element:<Home/>,
     // loader:checkAuthLoader
     
-
   },
   {
     path:'/login',
@@ -32,18 +34,32 @@ const router = createBrowserRouter([
   }
 ])
 
-function App() {
-  
 
+
+function App() {
+
+
+
+  const [reports, setReports] = useState([]);
+
+  const ReportProvider = ({ children }) => {
+    return (
+      <ReportsContext.Provider value={{ reports, setReports }}>
+        {children}
+      </ReportsContext.Provider>
+    )
+    }
 
   return (
     <>
+    <ReportProvider>
       <div className="App">
         <RouterProvider router={router}/>
       </div>
+      </ReportProvider>
 
     </>
   )
 }
 
-export default App
+export default App;
