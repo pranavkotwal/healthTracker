@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import {Navigate, RouterProvider,createBrowserRouter} from 'react-router-dom'
-import './App.css'
 import Register from './pages/Register'
 import Home from './pages/Home'
 import Login from './pages/Login'
@@ -53,7 +52,7 @@ function App() {
   return (
     <>
     <ReportProvider>
-      <div className="App">
+      <div className='relative flex min-h-screen flex-col items-center justify-center overflow-hidden bg-gray-50 py-6 sm:py-12'>
         <RouterProvider router={router}/>
       </div>
       </ReportProvider>

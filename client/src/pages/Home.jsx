@@ -50,7 +50,7 @@ const Home = () => {
   };
   return (
     <>
-      <div >
+      <div className="bg-black-400">
         <h4>
           {" "}
           Welcome <span>{username}</span>
