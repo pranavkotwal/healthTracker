@@ -7,6 +7,8 @@ import Dashboard from './pages/Dashboard'
 import {checkAuthLoader} from '../util/auth'
 
 import { ReportsContext } from './store/report-details'
+import Root from './pages/Root'
+import ErrorPage from './pages/ErrorPage'
 
 
 
@@ -14,9 +16,21 @@ import { ReportsContext } from './store/report-details'
 const router = createBrowserRouter([
   {
     path:'/',
-    element:<Home/>,
-    // loader:checkAuthLoader
-    
+    element:<Root/>,
+    errorElement:<ErrorPage/>,
+    children:[
+      {
+        path:'/dashboard',
+        element:<Dashboard/>,
+        loader:checkAuthLoader
+      },
+      {
+        path:'/',
+        element:<Home/>,
+        loader:checkAuthLoader 
+      }
+
+    ]
   },
   {
     path:'/login',
@@ -26,11 +40,7 @@ const router = createBrowserRouter([
     path:'/signup',
     element:<Register/>
   },
-  {
-    path:'/dashboard',
-    element:<Dashboard/>,
-    loader:checkAuthLoader
-  }
+  
 ])
 
 
@@ -52,7 +62,7 @@ function App() {
   return (
     <>
     <ReportProvider>
-      <div className='relative flex min-h-screen flex-col items-center justify-center overflow-hidden bg-gray-50 py-6 sm:py-12'>
+      <div className='w-screen h-screen flex justify-center items-center bg-slate-500' >
         <RouterProvider router={router}/>
       </div>
       </ReportProvider>
