@@ -2,12 +2,23 @@ import React, { useEffect, useState,useContext } from 'react';
 import axios from 'axios';
 import { ReportsContext } from '../store/report-details';
 import trash from '../assets/trash-solid.svg'
-import { Link } from 'react-router-dom';
+
 import { useNavigate } from 'react-router-dom';
 const ReportsList = () => {
-    const [reportsByDate, setReportsByDate] = useState([]);
+    const [reportsData, setReportsData] = useState([]);
     const {reports} = useContext(ReportsContext)
     const navigate = useNavigate()
+
+
+    function mergeOuterId(reportsByDateArray, reportsByDateMap) {
+        for (let i = 0; i < reportsByDateArray.length; i++) {
+            const reportsArray = reportsByDateArray[i].reports;
+            const reportsMap = reportsByDateMap[reportsByDateArray[i].date];
+            for (let j = 0; j < reportsArray.length; j++) {
+                reportsArray[j]._id = reportsMap[j]._id;
+            }
+        }
+    }
 
     useEffect(()=>{
         const getReports = async ()=>{
@@ -16,27 +27,12 @@ const ReportsList = () => {
                     const response = await axios.get('http://localhost:3000/v1/user/get-reports',{withCredentials:true})
                 
                     const reportsData = response.data;
-                    const reportsByDateMap = {}
+                    console.log("initial response,",reportsData)
+                  
 
-                    // organize reports by date
+                
 
-                    reportsData.forEach(report=>{
-                        const date = new Date(report.date).toLocaleDateString();
-
-                        if(!reportsByDateMap[date]){
-                            reportsByDateMap[date]=[]
-                        }
-                        reportsByDateMap[date].push(report)
-
-                    })
-                     // Convert map to array
-                    const reportsByDateArray = Object.entries(reportsByDateMap).map(([date, reports]) => ({
-                        date,
-                        reports,
-                    }))
-
-                    setReportsByDate(reportsByDateArray)
-
+                    setReportsData(reportsData)
 
                 }catch{
                      console.error('Error fetching reports:', error);
@@ -44,40 +40,76 @@ const ReportsList = () => {
                 }
             
         }
-        getReports(reportsByDate)
+        getReports()
        
 
     },[reports])
+
+
+    
     
     const handleRowClick=(row)=>{
       navigate(`${row}`)
 
     }
+    const handleDeleteRow = async (_id) => {
+
+      console.log(_id)
+    try {
+    
+      const response = await axios.delete(`http://localhost:3000/v1/user/delete/${_id}`,{withCredentials:true});
+      
+      
+       if (response.status === 200) {
+      console.log('deleted');
+
+      // Update state based on the previous state
+      setReportsData(prevReportsData => {
+       
+      
+        const updatedReportsData = prevReportsData.filter((el) => el._id !==_id)
+         
+
+        return updatedReportsData;
+      });
+    } else {
+      console.error('Failed to delete row');
+    }
+
+         
+    } catch (error) {
+      console.error('Error deleting row:', error);
+    }
+  };
+
+
+
 
     
 
 
-    console.log('reportsByDate',reportsByDate)
-    console.log('reports',reports)
+   
     return (
     <>
-      {reportsByDate.map(({ date, reports }) => (
+    {/* onClick={()=>handleRowClick(name)}  */}
+      {reportsData.map(({_id, date, reports }) => (
               reports.map(report => (
-                report.reports.map(({ _id, name, value, unit }) => (
-
-                  <tr key={_id} onClick={()=>handleRowClick(name)} className='hover:bg-red-400 hover:scale-102 cursor-pointer'  >
+                
+                  <tr key={report._id} className='hover:bg-slate-400 hover:scale-102 cursor-pointer'  >
                     
-                    <td className="border border-gray-300 px-4 py-2 text-center">{date}</td>
-                    <td className="border border-gray-300 px-4 py-2 text-center">{name}</td>
-                    <td className="border border-gray-300 px-4 py-2 text-center">{value}</td>
-                    <td className="border border-gray-300 px-4 py-2 text-center">{unit}</td>
+                    <td className="border border-gray-300 px-4 py-2 text-center">{new Date(date).toISOString().split('T')[0]}</td>
+                    <td className="border border-gray-300 px-4 py-2 text-center">{report.name}</td>
+                    <td className="border border-gray-300 px-4 py-2 text-center">{report.value}</td>
+                    <td className="border border-gray-300 px-4 py-2 text-center">{report.unit}</td>
                     <td className="border border-gray-300 px-4 py-2 flex justify-center ">
-                      <img src={trash} className='h-[30px]' alt="" />
+                      <img src={trash} className='h-[30px]' alt="" onClick={() => handleDeleteRow(_id)}/>
                     </td>
+                    
                   </tr>
+                  
 
 
-                ))
+              
               ))
             
       ))}
