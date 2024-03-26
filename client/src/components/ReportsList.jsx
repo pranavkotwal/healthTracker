@@ -2,6 +2,8 @@ import React, { useEffect, useState,useContext } from 'react';
 import axios from 'axios';
 import { ReportsContext } from '../store/report-details';
 import trash from '../assets/trash-solid.svg'
+import right from '../assets/right-long-solid.svg'
+import { Link } from 'react-router-dom';
 
 import { useNavigate } from 'react-router-dom';
 const ReportsList = () => {
@@ -101,8 +103,11 @@ const ReportsList = () => {
                     <td className="border border-gray-300 px-4 py-2 text-center">{report.name}</td>
                     <td className="border border-gray-300 px-4 py-2 text-center">{report.value}</td>
                     <td className="border border-gray-300 px-4 py-2 text-center">{report.unit}</td>
-                    <td className="border border-gray-300 px-4 py-2 flex justify-center ">
+                    <td className=" px-4 py-2 flex justify-center ">
                       <img src={trash} className='h-[30px]' alt="" onClick={() => handleDeleteRow(_id)}/>
+                    </td>
+                    <td className="border border-gray-300 px-4 py-2 ">
+                      <Link  to={`${report.name}`} className='flex gap-4'>View Chart <img  src={right} className='h-[25px]'/>   </Link>
                     </td>
                     
                   </tr>
