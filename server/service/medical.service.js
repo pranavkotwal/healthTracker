@@ -18,7 +18,6 @@ const enterReportDetials = async (userId,date,reports)=>{
 }
 
 
-
 // get reports
 
 
@@ -72,6 +71,23 @@ const searchMedicalData = async (userId, startDate, endDate, reportType) => {
     }
 };
 
+const deleteReport = async (id) => {
+    try {
+        const deletedReport = await MedicalData.findByIdAndDelete({_id:id});
+        if (!deletedReport) {
+            throw new Error("Report not found");
+        }
+        return deletedReport;
+    } catch (error) {
+        console.error('Error deleting report:', error);
+        throw error;
+    }
+};
+
+
+
+
+
 
 
 
@@ -79,5 +95,7 @@ const searchMedicalData = async (userId, startDate, endDate, reportType) => {
 module.exports ={
     enterReportDetials,
     getReportsOfUsers,
-    searchMedicalData
+    searchMedicalData,
+    deleteReport
+
 }
